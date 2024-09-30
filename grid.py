@@ -7,9 +7,9 @@ import config
 CELL_GRID = None
 
 MIN_FRIENDS = 3
-MAX_FRIENDS = 7
-MIN_SPREAD = 2
-MAX_ENEMIES = 5
+MAX_FRIENDS = 5
+MIN_SPREAD = 4
+MAX_ENEMIES = 6
 
 
 def init(ignore_walls=False):

@@ -26,8 +26,10 @@ def handle_input(event):
             UPDATE = False
         elif event.key == pygame.K_c and pygame.key.get_mods() & pygame.KMOD_SHIFT:
             grid.init(ignore_walls=True)
+            UPDATE = False
         elif event.key == pygame.K_c:
             grid.init()
+            UPDATE = False
         elif event.key == pygame.K_d:
             CHOSEN_TYPE += 1
             if CHOSEN_TYPE > 5:
