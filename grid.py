@@ -25,7 +25,10 @@ def randomize():
     CELL_GRID = np.random.choice([-1, 0, 1, 2, 3, 4, 5], (config.GRID_WIDTH, config.GRID_HEIGHT))
 
 
-def get_random_spawnable_neighbor(x, y, types):
+def get_random_neighbor(x, y, types):
+    '''
+    :return: List of neighbors' coordinates and types
+    '''
     neighbors = []
     
     # Determine the boundaries
@@ -82,10 +85,10 @@ def update_cells():
     # Spread rules
     spread_mask = same_neighbors >= MIN_SPREAD
     
-    if controls.STATIC:
+    if controls.STATIC: # Look for empty cells only
         empty_nearby = convolve((CELL_GRID == config.CellType.EMPTY.value).astype(int), neighbor_kernel, mode='constant', cval=0)
         spread_cells = spread_mask & (empty_nearby > 0)
-    else:
+    else: # Look for empty and food cells
         empty_food_mask = (CELL_GRID == config.CellType.EMPTY.value) | (CELL_GRID == config.CellType.FOOD.value)
         empty_food_nearby = convolve(empty_food_mask.astype(int), neighbor_kernel, mode='constant', cval=0)
         spread_cells = spread_mask & (empty_food_nearby > 0)
@@ -99,19 +102,21 @@ def update_cells():
     live_types = list(config.CellType.LIVE.value)
     random.shuffle(live_types)
     
-    # Spreading logic
+    # Spreading logic for eligible cells
     for live_type in live_types:
         spread_mask = spread_cells & (CELL_GRID == live_type)
         spread_positions = np.argwhere(spread_mask)
         
         for x, y in spread_positions:
-            # Static mode: don't spawn on food cells
-            n = get_random_spawnable_neighbor(x, y, [config.CellType.EMPTY.value]) if controls.STATIC else get_random_spawnable_neighbor(x, y, [config.CellType.EMPTY.value, config.CellType.FOOD.value])
+            # Don't look for food cells to spawn on if Static mode is enabled
+            types = [config.CellType.EMPTY.value] if controls.STATIC else [config.CellType.EMPTY.value, config.CellType.FOOD.value]
+            n = get_random_neighbor(x, y, types)
+            
             if n is not None:
                 new_grid[n[0], n[1]] = live_type # Spawn a new cell
                 # Remove a food cell if the new cell wasn't spawned over one
                 if not controls.STATIC and n[2] == config.CellType.EMPTY.value: # Static mode: don't consume food
-                    n = get_random_spawnable_neighbor(x, y, [config.CellType.FOOD.value])
+                    n = get_random_neighbor(x, y, [config.CellType.FOOD.value])
                     if n is not None:
                        new_grid[n[0]][n[1]] = config.CellType.EMPTY.value # Remove a food cell
                 continue
@@ -120,9 +125,8 @@ def update_cells():
 
 
 def spawn_cells(x, y, cell_type):
-    # Spawn cells in cluster
-    brush_size = 2
-    for i in range(x - brush_size, x + brush_size + 1):
-        for j in range(y - brush_size, y + brush_size + 1):
-            if i >= 0 and i < config.GRID_WIDTH and j >= 0 and j < config.GRID_HEIGHT:
-                CELL_GRID[i][j] = cell_type
+    # Spawn cells in circular cluster
+    for i in range(-2, 3):
+        for j in range(-2, 3):
+            if i**2 + j**2 < 5:
+                CELL_GRID[x + i][y + j] = cell_type
