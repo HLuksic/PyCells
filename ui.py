@@ -36,7 +36,7 @@ def render_type(win, r, g, b, text="   "):
     win.blit(text, (100, config.SCREEN_WIDTH + 20))
 
 
-def draw_text(win):
+def draw_text(win, clock):
     font = pygame.font.Font(None, 36)
     text = font.render("Brush: ", True, (255, 255, 255))
     win.blit(text, (10, config.SCREEN_WIDTH + 20))
@@ -59,6 +59,15 @@ def draw_text(win):
     if not controls.UPDATE:
         text = font.render("Paused", True, (255, 255, 255))
         win.blit(text, (10, config.SCREEN_WIDTH + 60))
+        
+    if controls.SHOW_FPS:
+        font = pygame.font.Font(None, 36)
+        text = font.render(str(int(clock.get_fps())) + " FPS", True, (255, 255, 255))
+        win.blit(text, (config.SCREEN_WIDTH - 100, config.SCREEN_WIDTH + 20))
+        
+    if controls.STATIC:
+        text = font.render("Static Mode", True, (255, 255, 255))
+        win.blit(text, (config.SCREEN_WIDTH - 160, config.SCREEN_WIDTH + 60))
     
 
 def draw_statistics(win):
@@ -70,7 +79,6 @@ def draw_statistics(win):
     
     # Calculate relative percentages
     total = red + green + blue + yellow
-    
     if total == 0:
         return
     
@@ -80,8 +88,10 @@ def draw_statistics(win):
     yellow_percent = yellow / total * 100
     
     # Draw bars
-    pygame.draw.rect(win, (196, 47, 47), (190, config.SCREEN_WIDTH + 15, red_percent, 10))
-    pygame.draw.rect(win, (54, 181, 73), (190, config.SCREEN_WIDTH + 35, green_percent, 10))
-    pygame.draw.rect(win, (52, 155, 235), (190, config.SCREEN_WIDTH + 55, blue_percent, 10))
-    pygame.draw.rect(win, (201, 186, 48), (190, config.SCREEN_WIDTH + 75, yellow_percent, 10))
+    pygame.draw.rect(win, (196, 47, 47), (230, config.SCREEN_WIDTH + 15, red_percent, 10))
+    pygame.draw.rect(win, (54, 181, 73), (230, config.SCREEN_WIDTH + 35, green_percent, 10))
+    pygame.draw.rect(win, (52, 155, 235), (230, config.SCREEN_WIDTH + 55, blue_percent, 10))
+    pygame.draw.rect(win, (201, 186, 48), (230, config.SCREEN_WIDTH + 75, yellow_percent, 10))
+    
+
 

@@ -6,10 +6,11 @@ CHOSEN_TYPE = 1
 UPDATE = False
 DRAW_GRID = False
 STATIC = False
+SHOW_FPS = False
 
 
 def handle_input(event):
-    global CHOSEN_TYPE, UPDATE, DRAW_GRID, STATIC
+    global CHOSEN_TYPE, UPDATE, DRAW_GRID, STATIC, SHOW_FPS
     
     if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_SPACE:
@@ -18,6 +19,8 @@ def handle_input(event):
             DRAW_GRID = not DRAW_GRID
         elif event.key == pygame.K_s:
             STATIC = not STATIC
+        elif event.key == pygame.K_f:
+            SHOW_FPS = not SHOW_FPS
         elif event.key == pygame.K_r:
             grid.randomize()
             UPDATE = False

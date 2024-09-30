@@ -24,25 +24,25 @@ def main():
 
         win.fill((0, 0, 0))
         ui.draw_cells(win)
-        ui.draw_text(win)
+        ui.draw_text(win, clock)
         ui.draw_statistics(win)
         if controls.DRAW_GRID:
             ui.draw_grid(win)   
         grid.update_cells()
         pygame.display.update()
-        #print(clock.get_fps())
 
     pygame.quit()
     
 if __name__ == "__main__":
     print("Controls:")
     print("Space - Start/Stop")
-    print("G - Toggle Grid")
+    print("A/D - Change Brush")
+    print("Left Click - Draw")
+    print("1/2/3/4 - Change Cell Rules")
     print("S - Toggle Static Mode (Spawning on and Consuming Food)")
     print("R - Randomize")
     print("C - Clear")
     print("Shift + C - Clear All But Walls")
-    print("A/D - Change Brush")
-    print("1/2/3/4 - Change Cell Rules")
-    print("Left Click - Draw")
+    print("G - Toggle Grid")
+    print("F - Toggle FPS")
     main()
